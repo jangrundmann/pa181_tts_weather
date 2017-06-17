@@ -297,7 +297,7 @@ function outHour(ele) {
 
 //-- event handlers
 
-var defaultGeo = "50.07,14.43"; // Ottawaw
+var defaultGeo = "50.07,14.43"; // Prague
 
 function addGeocode(label, geocode) {
 	var x = document.getElementById("weather_presets");
