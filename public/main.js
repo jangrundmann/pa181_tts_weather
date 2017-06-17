@@ -123,7 +123,7 @@ function tempType() {
 		return "F";
 	}
 }
-
+var speechString = "";
 function updateToday(forecast) {
 	var d = new Date(forecast.fcst_valid_local);
 	if (d.toString() == "Invalid Date") {
@@ -145,13 +145,18 @@ function updateToday(forecast) {
 	$("#weather_moonset").html(getTime(forecast.moonset));
 
 	$("#weather_display").css('display', 'block');
+		
+	speechString += 'Today is '+ forecast.dow+ ' the '+dateString+ '. The temperature is '+hourlyForecasts[0].temp+ ' °Celsius, expect '+data.phrase_32char+ '. Humidity is at ' +data.rh+ 'percent';
+	var audio = new Audio('https://pa181-weather-speech.mybluemix.net/talk/sayit?text_to_say='+speechString);
+	audio.play();
+	console.log(speechString);
 }
 
 function resetToday() {
 	$("#weather_display").css('display', 'none');
 }
 
-function renderDay(forecast, period) {
+/*function renderDay(forecast, period) {
 	var s = "";
 	if (period) {
 		s += '<table cellspacing="0px" cellpadding="0px" border="0" width="350px" height="80px">'
@@ -176,11 +181,11 @@ function renderDay(forecast, period) {
 		+	'</table>';
 	}
 	return s;
-}
+}*/
 
 
 //-- vertical layout
-function renderForecastDay(forecast, index) {
+/*function renderForecastDay(forecast, index) {
 	var s = 
 		'<table cellspacing="0px" cellpadding="0px" border="0" width="810px" height="60px" '
 	+		' style="border:1px solid silver; margin-bottom:5px; background-color:#000000; border-radius:5px; cursor:pointer"'
@@ -202,24 +207,24 @@ function renderForecastDay(forecast, index) {
 	+ 	'<div id="dailyforecast_json_' + index + '" style="display:none; margin-bottom:10px"></div>';
 
 	return s;
-}
+}*/
 
 
 var dailyForecasts = [];	// current data
 
-function renderDailyForecast(forecasts) {
+/*function renderDailyForecast(forecasts) {
 	var s = "";
 	forecasts.forEach(function(forecast, index) {
 		s += renderForecastDay(forecast, index);
 	});
 	return s;
 }
-
+*/
 function displayDaily(result) {
 	if (result.forecasts) {
 		dailyForecasts = result.forecasts.slice(1);
 		updateToday(result.forecasts[0]);
-		$("#weather_daily").html(renderDailyForecast(result.forecasts.slice(1)));
+		//$("#weather_daily").html(renderDailyForecast(result.forecasts.slice(1)));
 	}
 }
 
@@ -235,7 +240,7 @@ function dailyReset() {
 	$("#daily_throbber").css('display', 'block');
 }
 
-function renderDayJson(index) {
+/*function renderDayJson(index) {
 	var s = renderObject({ daily_forecast: dailyForecasts[index] });
 	return s;
 }
@@ -271,7 +276,7 @@ function overDay(ele) {
 
 function outDay(ele) {
 	ele.style.opacity = "1.0";
-}
+}*/
 
 
 //-- hourly display
@@ -404,7 +409,7 @@ function outHour(ele) {
 
 //-- event handlers
 
-var defaultGeo = "45.43,-75.68"; // Ottawaw
+var defaultGeo = "50.07,14.43"; // Ottawaw
 
 function addGeocode(label, geocode) {
 	var x = document.getElementById("weather_presets");
@@ -578,6 +583,24 @@ function setLocation(geocode, units, language) {
 	displayReset();
 	updateControls(geocode, units, language);
 
+	showWaiting('#hourly_throbber', '#hourly_error', '#weather_hourly');
+	weatherAPI("/api/forecast/hourly", { 
+		geocode: geocode,
+		units: units,
+		language: language
+	}, function(err, data) {
+  		if (err) {
+  			showError('#hourly_throbber', '#hourly_error', '#weather_hourly', err);
+  		} else {
+  			if (data.forecasts) {
+  				showDisplay('#hourly_throbber', '#hourly_error', '#weather_hourly');
+				displayHourly(data);
+			} else {
+	  			showError('#hourly_throbber', '#hourly_error', '#weather_hourly', "Data missing");
+			}
+  		}
+	});
+
 	showWaiting('#daily_throbber', '#daily_error', '#daily_display');
 	weatherAPI("/api/forecast/daily", { 
 		geocode: geocode,
@@ -596,23 +619,7 @@ function setLocation(geocode, units, language) {
   		}
 	});
 
-	showWaiting('#hourly_throbber', '#hourly_error', '#weather_hourly');
-	weatherAPI("/api/forecast/hourly", { 
-		geocode: geocode,
-		units: units,
-		language: language
-	}, function(err, data) {
-  		if (err) {
-  			showError('#hourly_throbber', '#hourly_error', '#weather_hourly', err);
-  		} else {
-  			if (data.forecasts) {
-  				showDisplay('#hourly_throbber', '#hourly_error', '#weather_hourly');
-				displayHourly(data);
-			} else {
-	  			showError('#hourly_throbber', '#hourly_error', '#weather_hourly', "Data missing");
-			}
-  		}
-	});
+	
 }
 
 function init() {
@@ -624,5 +631,6 @@ function init() {
 			setLocation(geocode, "m", "en");
 		}
 	});
+	
 }
 

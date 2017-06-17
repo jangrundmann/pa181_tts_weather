@@ -1,32 +1,31 @@
 {
-  "name": "weather-company-data-demo",
-  "version": "0.0.2",
+  "name": "weather-project-pa181",
+  "version": "0.0.1",
   "private": false,
-  "description": "A sample nodejs app for using the Weather Company Data Service in Bluemix.",
+  "description": "A nodejs app using the Weather Company Data Service in Bluemix.",
   "engines": {
     "node": "0.12.*"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IBM-Bluemix/weather-company-data-demo.git"
+    "url": ""
   },
   "dependencies": {
     "cfenv": "^1.0.3",
-    "express": "3.4.7",
+    "express": "^4.13.4",
     "helmet": "^2.1.1",
     "request": "^2.51.0"
-  },  
-  "author": [
+  },
+  "author": 
     {
-      "name": "Robert Desbiens",
-      "email": "Robert.Desbiens@ca.ibm.com"
-    }
-  ],
+      "name": "",
+      "email": ""
+    },
   "contributors": [
     {
-      "name": "Trish Smith",
-      "email": "smith@ca.ibm.com"
+      "name": "",
+      "email": ""
     }
   ],
-   "license": "Apache License"
+  "license": "Apache License"
 }

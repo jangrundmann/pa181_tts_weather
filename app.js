@@ -19,6 +19,7 @@ var express = require('express');
 var request = require('request');
 var cfenv = require('cfenv');
 
+
 //Security - helmet
 var helmet = require('helmet');
 
@@ -26,17 +27,16 @@ var helmet = require('helmet');
 var app = express();
 var ninetyDaysInMilliseconds = 7776000000;
 
-app.configure(function(){
-  app.use(express.static(__dirname + '/public'));
-  // set the HTTP Strict Transport Security (HSTS) header for 90 days	
-  app.use(helmet.hsts({
-	  maxAge: ninetyDaysInMilliseconds,
-	  includeSubdomains: true,
-	  force: true
-  }));
-  // Prevent Cross-site scripting (XSS) attacks
-  app.use(helmet.xssFilter());  
-});
+
+app.use(express.static(__dirname + '/public'));
+// set the HTTP Strict Transport Security (HSTS) header for 90 days	
+app.use(helmet.hsts({
+    maxAge: ninetyDaysInMilliseconds,
+    includeSubdomains: true,
+    force: true
+}));
+// Prevent Cross-site scripting (XSS) attacks
+app.use(helmet.xssFilter());  
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
@@ -75,7 +75,7 @@ function weatherAPI(path, qs, done) {
 }
 
 app.get('/api/forecast/daily', function(req, res) {
-    var geocode = (req.query.geocode || "45.43,-75.68").split(",");
+    var geocode = (req.query.geocode || "50.07,14.43").split(",");
     weatherAPI("/api/weather/v1/geocode/" + geocode[0] + "/" + geocode[1] + "/forecast/daily/10day.json", {
         units: req.query.units || "m",
         language: req.query.language || "en"
@@ -91,7 +91,7 @@ app.get('/api/forecast/daily', function(req, res) {
 });
 
 app.get('/api/forecast/hourly', function(req, res) {
-    var geocode = (req.query.geocode || "45.43,-75.68").split(",");
+    var geocode = (req.query.geocode || "50.07,14.43").split(",");
     weatherAPI("/api/weather/v1/geocode/" + geocode[0] + "/" + geocode[1] + "/forecast/hourly/48hour.json", {
         units: req.query.units || "m",
         language: req.query.language || "en"
@@ -105,8 +105,7 @@ app.get('/api/forecast/hourly', function(req, res) {
         }
     });
 });
-
+ 
 app.listen(appEnv.port, appEnv.bind, function() {
   console.log("server starting on " + appEnv.url);
 });
-
