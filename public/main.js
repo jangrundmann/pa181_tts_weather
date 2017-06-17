@@ -107,21 +107,11 @@ function getTime(iso) {
 }
 
 function speedType() {
-	var units = $("#weather_units").val();
-	if (units == 'm' || units == 'h') {
-		return "KPH";
-	} else {
-		return "MPH";
-	}
+	return "KPH";
 }
 
 function tempType() {
-	var units = $("#weather_units").val();
-	if (units == 'm' || units == 'h') {
-		return "C";
-	} else {
-		return "F";
-	}
+	return "C";
 }
 var speechString = "";
 function updateToday(forecast) {
@@ -156,76 +146,13 @@ function resetToday() {
 	$("#weather_display").css('display', 'none');
 }
 
-/*function renderDay(forecast, period) {
-	var s = "";
-	if (period) {
-		s += '<table cellspacing="0px" cellpadding="0px" border="0" width="350px" height="80px">'
-		+		'<tr>'
-		+			'<td valign="top" align="center">'
-		+ 				'<img vspace="4px" width="50px" height="50px" src="' + getIconURL(period.icon_code) + '"/>'
-		+			'</td>'
-		+			'<td rowspan="2" valign="top" align="left" width="220px" style="padding:4px;">'
-		+				'<span style="font-size:10pt; font-family:sans-serif; color:white;">' 
-		+ 					period.narrative 
-		+ 				'</span>'
-		+			'</td>'
-		+		'</tr>'
-		+		'<tr>'
-		+			'<td align="center" height="20px" width="80px" style="color:white; padding-bottom:4px;">'
-		+				'<div style="text-align:center; width:80px;">'
-		+					'<span style="font-size:14pt;">' + period.hi + '&#176; / </span>'
-		+					'<span style="font-size:12pt;">' + forecast.min_temp + '&#176;</span>'
-		+				'</div>'
-		+			'</td>'
-		+		'</td>'
-		+	'</table>';
-	}
-	return s;
-}*/
-
-
-//-- vertical layout
-/*function renderForecastDay(forecast, index) {
-	var s = 
-		'<table cellspacing="0px" cellpadding="0px" border="0" width="810px" height="60px" '
-	+		' style="border:1px solid silver; margin-bottom:5px; background-color:#000000; border-radius:5px; cursor:pointer"'
-	+		' onmouseover="overHour(this);" onmouseout="outHour(this);"; onclick="clickDay(' + index + ');">'
-	+		'<tr>'
-	+			'<td align="center" height="60px" width="120px" style="background-color:#5599C8; color:white;">'
-	+				'<span style="font-size:12pt; font-weight:bold; font-family:sans-serif; color:white;">' 
-	+					forecast.dow
-	+ 				'</span>'
-	+			'</td>'
-	+			'<td valign="top" align="left" height="60px" width="345px" style="background-color:#164F9C">'
-	+ 				renderDay(forecast, forecast.day)
-	+			'</td>'
-	+			'<td valign="top" align="left" height="60px" width="345px">'
-	+ 				renderDay(forecast, forecast.night)
-	+			'</td>'
-	+		'</tr>'
-	+	'</table>'
-	+ 	'<div id="dailyforecast_json_' + index + '" style="display:none; margin-bottom:10px"></div>';
-
-	return s;
-}*/
-
-
 var dailyForecasts = [];	// current data
 
-/*function renderDailyForecast(forecasts) {
-	var s = "";
-	forecasts.forEach(function(forecast, index) {
-		s += renderForecastDay(forecast, index);
-	});
-	return s;
-}
-*/
 function displayDaily(result) {
 	if (result.forecasts) {
 		dailyForecasts = result.forecasts.slice(1);
 		updateToday(result.forecasts[0]);
-		//$("#weather_daily").html(renderDailyForecast(result.forecasts.slice(1)));
-	}
+		}
 }
 
 // daily events
@@ -239,45 +166,6 @@ function dailyReset() {
 	$("#weather_hourly_json").html("");
 	$("#daily_throbber").css('display', 'block');
 }
-
-/*function renderDayJson(index) {
-	var s = renderObject({ daily_forecast: dailyForecasts[index] });
-	return s;
-}
-
-function showDayJson(index) {
-	if (dailyVisible[index] === undefined) {
-		$("#dailyforecast_json_" + index).html(renderDayJson(index));
-		dailyVisible[index] = false;
-	}
-	$("#dailyforecast_json_" + index).show("slow");
-	dailyVisible[index] = true;
-}
-
-function hideDayJson(index) {
-	if (dailyVisible[index]) {
-		$("#dailyforecast_json_" + index).hide("slow");
-		dailyVisible[index] = false;
-	}
-}
-
-function clickDay(index) {
-	// if div is visible
-	if (dailyVisible[index]) {
-		hideDayJson(index);
-	} else {
-		showDayJson(index);
-	}
-}
-
-function overDay(ele) {
-	ele.style.opacity = "0.5";
-}
-
-function outDay(ele) {
-	ele.style.opacity = "1.0";
-}*/
-
 
 //-- hourly display
 
@@ -430,21 +318,6 @@ function getCoordinates() {
 	return document.getElementById("weather_presets").value;
 }
 
-function getUnits() {
-	return $("#weather_units").val();
-}
-
-function getLanguage() {
-	return $("#weather_language").val();
-}
-
-function setUnits() {
-	setLocation();
-}
-
-function setLanguage(language) {
-	setLocation();
-}
 
 function updatePresets(geocode) {
 	var index = 0;
@@ -458,18 +331,12 @@ function updatePresets(geocode) {
 	sel.selectedIndex = index;
 }
 
-function updateControls(geocode, units, language) {
+function updateControls(geocode) {
 	if (geocode) {
 		var a = geocode.split(",");
 		$("#weather_latitude").val(a[0]);
 		$("#weather_longitude").val(a[1]);
 		document.getElementById("weather_presets").value = geocode;
-	}
-	if (units) {
-		document.getElementById("weather_units").value = units;
-	}
-	if (language) {
-		document.getElementById("weather_language").value = language;
 	}
 }
 
@@ -577,11 +444,11 @@ function showDisplay(throbberdiv, errordiv, displaydiv) {
 
 function setLocation(geocode, units, language) {
 	geocode = geocode || getCoordinates();
-	units = units || getUnits();
-	language = language || getLanguage();
+	units = units;
+	language = language;
 
 	displayReset();
-	updateControls(geocode, units, language);
+	updateControls(geocode);
 
 	showWaiting('#hourly_throbber', '#hourly_error', '#weather_hourly');
 	weatherAPI("/api/forecast/hourly", { 
